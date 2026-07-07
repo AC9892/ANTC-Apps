@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ANTC Studio Legacy by Air Conditioner</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div>
+          <p class="app-kicker">ANTC Studio Legacy By Air Conditioner</p>
+          <h1>ANTC Studio Legacy - Air Conditioner / AC9892</h1>
+          <p class="app-subtitle">Work with `.atl` files without the oversized dashboard.</p>
+        </div>
+        <div class="app-badges">
+          <span>ANTC</span>
+          <span>v1</span>
+        </div>
+      </header>
+
+      <nav class="tab-bar" aria-label="Sections">
+        <button class="tab-button is-active" data-tab-target="encode" type="button">Encode</button>
+        <button class="tab-button" data-tab-target="decode" type="button">Decode</button>
+        <button class="tab-button" data-tab-target="inspect" type="button">Inspect</button>
+        <button class="tab-button" data-tab-target="settings" type="button">Settings</button>
+      </nav>
+
+      <section class="tab-panel panel is-active" data-tab-panel="encode">
+        <div class="panel-header compact">
+          <div>
+            <h2>Encode to ATL</h2>
+            <p>Create an `.atl` file from any source file.</p>
+          </div>
+        </div>
+
+        <label class="field">
+          <span>Input file</span>
+          <div class="path-row">
+            <input id="encode-input-path" type="text" placeholder="Choose any source file" />
+            <button id="encode-input-browse" type="button">Browse</button>
+          </div>
+        </label>
+
+        <label class="field">
+          <span>Output ATL file</span>
+          <div class="path-row">
+            <input id="encode-output-path" type="text" placeholder="Save as .atl" />
+            <button id="encode-output-browse" type="button">Save As</button>
+          </div>
+        </label>
+
+        <div class="form-grid">
+          <label class="field">
+            <span>Input handling</span>
+            <select id="encode-input-mode">
+              <option value="auto">Auto detect</option>
+              <option value="raw">Raw binary to ANTC</option>
+              <option value="text-hex-binary">Data to hex to binary to ANTC</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Compression</span>
+            <select id="encode-compression">
+              <option value="auto">auto (file-aware)</option>
+              <option value="brotli-max">brotli max (slow)</option>
+              <option value="brotli">brotli</option>
+              <option value="gzip">gzip</option>
+              <option value="zlib">zlib</option>
+              <option value="none">none</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Width</span>
+            <input id="encode-width" type="number" min="0" placeholder="Auto" />
+          </label>
+
+          <label class="field">
+            <span>Height</span>
+            <input id="encode-height" type="number" min="0" placeholder="Auto" />
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Metadata JSON (optional)</span>
+          <div class="path-row">
+            <input id="encode-metadata-path" type="text" placeholder="Supplemental JSON metadata" />
+            <button id="encode-metadata-browse" type="button">Browse</button>
+          </div>
+        </label>
+
+        <details class="advanced-encode">
+          <summary>Advanced Encode</summary>
+
+          <div class="form-grid advanced-encode-grid">
+            <label class="field">
+              <span>Auto strategy</span>
+              <select id="advanced-auto-strategy">
+                <option value="smart">smart (file-aware)</option>
+                <option value="speed">speed</option>
+                <option value="balanced">balanced</option>
+                <option value="max">max</option>
+                <option value="exhaustive">exhaustive</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Experimental transform</span>
+              <select id="advanced-transform">
+                <option value="none">none</option>
+                <option value="auto">auto experimental</option>
+                <option value="delta">delta</option>
+                <option value="rle">rle</option>
+                <option value="delta-rle">delta + rle</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Combo Compression</span>
+              <select id="combo-compression">
+                <option value="combo-none">none</option>
+
+                <option value="brotli+delta">brotli + delta ⭐</option>
+                <option value="zlib+rle">zlib + rle</option>
+                <option value="zstd+delta">zstd + delta ⭐ (stub)</option>
+                <option value="lzma+bcj+delta">lzma + bcj + delta (stub)</option>
+                <option value="lz4">lz4 (stub)</option>
+                <option value="lzma">lzma (stub)</option>
+              </select>
+            </label>
+          </div>
+          <div class="settings-note advanced-note">
+            <strong>Experimental.</strong> These options affect new encodes only. Decode remains automatic.
+          </div>
+        </details>
+
+        <div class="actions">
+          <button id="encode-submit" class="primary" type="button">Encode File</button>
+          <button id="encode-reveal" class="secondary" type="button" disabled>Reveal Output</button>
+        </div>
+
+        <div id="encode-result" class="result-card hidden"></div>
+        <div id="encode-log" class="result-card log-card hidden"></div>
+      </section>
+
+      <section class="tab-panel panel" data-tab-panel="decode">
+        <div class="panel-header compact">
+          <div>
+            <h2>Decode from ATL</h2>
+            <p>Restore the original file name and extension when metadata is available.</p>
+          </div>
+        </div>
+
+        <label class="field">
+          <span>Input ATL file</span>
+          <div class="path-row">
+            <input id="decode-input-path" type="text" placeholder="Choose an .atl file" />
+            <button id="decode-input-browse" type="button">Browse</button>
+          </div>
+        </label>
+
+        <label class="field">
+          <span>Restored output file</span>
+          <div class="path-row">
+            <input
+              id="decode-output-path"
+              type="text"
+              placeholder="Leave blank to restore original name if available"
+            />
+            <button id="decode-output-browse" type="button">Save As</button>
+          </div>
+        </label>
+
+        <div class="actions">
+          <button id="decode-submit" class="primary" type="button">Decode File</button>
+          <button id="decode-reveal" class="secondary" type="button" disabled>Reveal Output</button>
+        </div>
+
+        <div id="decode-result" class="result-card hidden"></div>
+        <div id="decode-log" class="result-card log-card hidden"></div>
+      </section>
+
+      <section class="tab-panel panel" data-tab-panel="inspect">
+        <div class="panel-header compact">
+          <div>
+            <h2>Inspect ATL</h2>
+            <p>View checksum, metadata, and pixel preview.</p>
+          </div>
+        </div>
+
+        <label class="field">
+          <span>ATL file</span>
+          <div class="path-row">
+            <input id="inspect-input-path" type="text" placeholder="Choose an .atl file to inspect" />
+            <button id="inspect-input-browse" type="button">Browse</button>
+          </div>
+        </label>
+
+        <div class="actions">
+          <button id="inspect-submit" class="primary" type="button">Inspect File</button>
+          <button id="inspect-export-image" class="secondary" type="button" disabled>Save Preview Image</button>
+        </div>
+
+        <div class="form-grid export-grid">
+          <label class="field">
+            <span>Image format</span>
+            <select id="inspect-export-format">
+              <option value="webp">webp (smallest)</option>
+              <option value="jpeg">jpeg</option>
+              <option value="png">png</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Export size</span>
+            <select id="inspect-export-size">
+              <option value="2048">2048 max</option>
+              <option value="1024">1024 max</option>
+              <option value="4096">4096 max</option>
+              <option value="visible">visible preview</option>
+              <option value="native">native ATL size</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Quality</span>
+            <select id="inspect-export-quality">
+              <option value="0.82">balanced</option>
+              <option value="0.92">high</option>
+              <option value="0.7">smaller</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="preview-override-panel" class="override-panel hidden">
+          <label class="override-toggle" for="preview-override-toggle">
+            <input id="preview-override-toggle" type="checkbox" />
+            <span>Allow preview even though this file is over the preview limit</span>
+          </label>
+          <p id="preview-override-text"></p>
+          <p class="override-note">
+            * This only appears when a file is over the limit, and the setting is not saved.
+          </p>
+        </div>
+
+        <div id="inspect-empty" class="empty-state">
+          <p>No file loaded yet.</p>
+          <span>Run an inspection to view dimensions, checksum, metadata, and RGB preview.</span>
+        </div>
+
+        <div id="inspect-results" class="inspect-results hidden">
+          <div class="info-strip compact">
+            <div class="info-pill">
+              <span>Checksum</span>
+              <strong id="inspect-checksum">-</strong>
+            </div>
+            <div class="info-pill">
+              <span>Pixels</span>
+              <strong id="inspect-pixels">-</strong>
+            </div>
+            <div class="info-pill">
+              <span>Encoded bytes</span>
+              <strong id="inspect-encoded-size">-</strong>
+            </div>
+          </div>
+
+          <div id="inspect-export-info" class="info-strip compact hidden">
+            <div class="info-pill">
+              <span>Format</span>
+              <strong id="inspect-export-format-value">-</strong>
+            </div>
+            <div class="info-pill">
+              <span>Image Size</span>
+              <strong id="inspect-export-dimensions">-</strong>
+            </div>
+            <div class="info-pill">
+              <span>Image Bytes</span>
+              <strong id="inspect-export-bytes">-</strong>
+            </div>
+          </div>
+
+          <div class="preview-frame compact">
+            <canvas id="preview-canvas" width="1" height="1"></canvas>
+          </div>
+          <div id="preview-message" class="preview-message"></div>
+
+          <div class="metadata-block">
+            <div class="metadata-heading">
+              <h3>Metadata</h3>
+              <p id="inspect-geometry"></p>
+            </div>
+            <pre id="inspect-metadata"></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel panel" data-tab-panel="settings">
+        <div class="panel-header compact">
+          <div>
+            <h2>Settings</h2>
+            <p>Session-only defaults for the current window. Nothing here is saved permanently.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <label class="field">
+            <span>Default input handling</span>
+            <select id="settings-default-input-mode">
+              <option value="auto">Auto detect</option>
+              <option value="raw">Raw binary to ANTC</option>
+              <option value="text-hex-binary">Data to hex to binary to ANTC</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Default compression</span>
+            <select id="settings-default-compression">
+              <option value="auto">auto (file-aware)</option>
+              <option value="brotli-max">brotli max (slow)</option>
+              <option value="brotli">brotli</option>
+              <option value="gzip">gzip</option>
+              <option value="zlib">zlib</option>
+              <option value="none">none</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Preview limit (pixels)</span>
+            <input id="settings-preview-limit" type="number" min="1" step="1" />
+          </label>
+        </div>
+
+        <div class="settings-toggle-grid">
+          <label class="toggle-field" for="settings-allow-large-files">
+            <input id="settings-allow-large-files" type="checkbox" />
+            <span>Allow files over the 2 GB safety limit</span>
+          </label>
+
+          <label class="toggle-field" for="settings-show-operation-logs">
+            <input id="settings-show-operation-logs" type="checkbox" />
+            <span>Show encode and decode logs</span>
+          </label>
+        </div>
+
+        <div class="settings-note">
+          <strong>Session only.</strong> Applying settings updates the current form defaults and inspect limit
+          for this app session. The large-file override only removes the app safety check and may still fail
+          if Electron or Node runs out of memory.
+        </div>
+
+        <div class="actions">
+          <button id="settings-apply" class="primary" type="button">Apply Settings</button>
+          <button id="settings-reset" class="secondary" type="button">Reset Session</button>
+        </div>
+
+        <div id="settings-result" class="result-card hidden"></div>
+      </section>
+
+      <div id="status-bar" class="status-bar idle">Ready.</div>
+    </main>
+
+    <div id="freeze-overlay" class="freeze-overlay hidden" aria-hidden="true">
+      <div class="freeze-overlay-card">
+        <strong>Application is frozen</strong>
+        <p id="freeze-overlay-detail">
+          Large file processing is running. Wait for the operation to finish.
+        </p>
+      </div>
+    </div>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>

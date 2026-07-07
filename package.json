@@ -1,0 +1,20 @@
+{
+  "name": "atl_codex",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Desktop and CLI tools for the ANTC .atl binary format",
+  "main": "./desktop/main.js",
+  "bin": {
+    "atl_codex": "./src/cli.js"
+  },
+  "scripts": {
+    "start": "electron .",
+    "test": "node ./test/antc.test.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "electron": "^41.1.1"
+  }
+}
