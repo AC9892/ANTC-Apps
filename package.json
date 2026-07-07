@@ -2,8 +2,8 @@
   "name": "atl_codex",
   "version": "1.0.0",
   "private": true,
-  "description": "Desktop and CLI tools for the ANTC .atl binary format by Air Conditioner (AC989)",
-  "author": "Air Conditioner (AC989)",
+  "description": "Desktop and CLI tools for the ANTC .atl binary format by Air Conditioner (AC9892)",
+  "author": "Air Conditioner (AC9892)",
   "license": "LicenseRef-Air-Conditioner-Anti-Selling",
   "main": "./desktop/main.js",
   "bin": {

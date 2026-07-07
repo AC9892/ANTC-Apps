@@ -554,8 +554,8 @@ test("text files encoded with auto mode decode back to original text bytes", () 
   assert.equal(encoded.info.metadata.original_file_name, "source.txt");
   assert.equal(encoded.info.metadata.original_file_extension, ".txt");
   assert.equal(encoded.info.metadata.owner_name, "Air Conditioner");
-  assert.equal(encoded.info.metadata.owner_tag, "AC989");
-  assert.equal(encoded.info.metadata.owner_mark, "Air Conditioner (AC989)");
+  assert.equal(encoded.info.metadata.owner_tag, "AC9892");
+  assert.equal(encoded.info.metadata.owner_mark, "Air Conditioner (AC9892)");
   assert.equal(encoded.info.metadata.license_notice, "Unauthorized resale prohibited.");
   assert.equal(typeof encoded.info.metadata.ownership_signature, "string");
   assert.ok(encoded.info.metadata.ownership_signature.length > 0);

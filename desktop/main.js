@@ -190,7 +190,7 @@ function registerIpc() {
 
 app.whenReady().then(() => {
   app.setName("ANTC Studio by Air Conditioner");
-  app.setAppUserModelId("com.ac989.antc.studio");
+  app.setAppUserModelId("com.ac9892.antc.studio");
   registerIpc();
   createWindow();
 
