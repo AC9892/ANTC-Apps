@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Binary Inspect Legacy by Air Conditioner</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div>
+          <p class="app-kicker">Binary Inspect Legacy By Air Conditioner</p>
+          <h1>Binary Inspect Legacy - Air Conditioner / AC9892</h1>
+          <p class="app-subtitle">Shows format, architecture, hashes, sections, entropy, and printable strings.</p>
+        </div>
+        <div class="app-badges">
+          <span>PE</span>
+          <span>ELF</span>
+          <span>Mach-O</span>
+        </div>
+      </header>
+
+      <section class="panel">
+        <div class="panel-header compact">
+          <div>
+            <h2>Inspect Binary</h2>
+            <p>Select an executable or library to view static structure and metadata.</p>
+          </div>
+        </div>
+
+        <nav class="tab-bar" aria-label="Binary Inspector Sections">
+          <button class="tab-button is-active" data-tab-target="inspect" type="button">Inspect</button>
+          <button class="tab-button" data-tab-target="placeholder" type="button">Placeholder</button>
+        </nav>
+
+        <section class="tab-panel is-active" data-tab-panel="inspect">
+          <label class="field">
+            <span>Input file</span>
+            <div class="path-row">
+              <input id="inspect-input-path" type="text" placeholder="Choose an .exe, .dll, ELF, Mach-O, or similar file" />
+              <button id="inspect-input-browse" type="button">Browse</button>
+            </div>
+          </label>
+
+          <div class="actions">
+            <button id="inspect-submit" class="primary" type="button">Inspect File</button>
+          </div>
+
+          <div id="result-card" class="result-card hidden"></div>
+
+          <div id="summary-card" class="info-strip compact hidden">
+            <div class="info-pill">
+              <span>Format</span>
+              <strong id="summary-format">-</strong>
+            </div>
+            <div class="info-pill">
+              <span>Architecture</span>
+              <strong id="summary-arch">-</strong>
+            </div>
+            <div class="info-pill">
+              <span>Entropy</span>
+              <strong id="summary-entropy">-</strong>
+            </div>
+          </div>
+
+          <section class="metadata-block">
+            <div class="metadata-heading">
+              <h3>Hashes</h3>
+            </div>
+            <pre id="hashes-output">Run an inspection to view hashes.</pre>
+          </section>
+
+          <section class="metadata-block">
+            <div class="metadata-heading">
+              <h3>File Details</h3>
+            </div>
+            <pre id="details-output">Run an inspection to view parsed headers.</pre>
+          </section>
+
+          <section class="metadata-block">
+            <div class="metadata-heading">
+              <h3>Printable Strings</h3>
+            </div>
+            <pre id="strings-output">Run an inspection to sample printable strings.</pre>
+          </section>
+        </section>
+
+        <section class="tab-panel" data-tab-panel="placeholder">
+          <div class="panel-header compact" style="margin-bottom: 12px;">
+            <div>
+              <h2>Decompiler</h2>
+              <p>Extract imports, exports, resources, strings, and structural metadata from binaries.</p>
+            </div>
+          </div>
+
+          <label class="field">
+            <span>Input file or directory</span>
+            <div class="path-row">
+              <input id="decompile-input-path" type="text" placeholder="Choose a file or folder containing .exe, .dll, ELF, Mach-O, etc." />
+              <button id="decompile-input-browse" type="button">Browse File</button>
+              <button id="decompile-dir-browse" type="button">Browse Dir</button>
+            </div>
+          </label>
+
+          <label class="field">
+            <span>Output directory (optional)</span>
+            <div class="path-row">
+              <input id="decompile-output-path" type="text" placeholder="Choose a folder to save decompiled results" />
+              <button id="decompile-output-browse" type="button">Browse</button>
+            </div>
+          </label>
+
+          <div class="actions">
+            <button id="decompile-submit" class="primary" type="button">Decompile</button>
+            <button id="decompile-save" type="button" disabled>Save Results</button>
+          </div>
+
+          <div id="decompile-result-card" class="result-card hidden"></div>
+
+          <section class="metadata-block">
+            <div class="metadata-heading">
+              <h3>Imports &amp; Exports</h3>
+            </div>
+            <pre id="decompile-imports-output">Run a decompilation to view imports and exports.</pre>
+          </section>
+
+          <section class="metadata-block">
+            <div class="metadata-heading">
+              <h3>Resources &amp; Metadata</h3>
+            </div>
+            <pre id="decompile-resources-output">Run a decompilation to view resources and metadata.</pre>
+          </section>
+
+          <section class="metadata-block">
+            <div class="metadata-heading">
+              <h3>Deep Strings</h3>
+            </div>
+            <pre id="decompile-strings-output">Run a decompilation to view categorized strings.</pre>
+          </section>
+
+          <section class="metadata-block">
+            <div class="metadata-heading">
+              <h3>Structural Report</h3>
+            </div>
+            <pre id="decompile-struct-output">Run a decompilation to view structural report.</pre>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>

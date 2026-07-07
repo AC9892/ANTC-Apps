@@ -1,0 +1,174 @@
+:root {
+  --bg: #0a0d10;
+  --surface: #12181d;
+  --surface-soft: #172028;
+  --surface-strong: #1f2b36;
+  --line: rgba(184, 196, 210, 0.12);
+  --text: #edf2f6;
+  --muted: #9fb0bc;
+  --accent: #7fd0a5;
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+  --font-display: "Bahnschrift", "Aptos Display", "Segoe UI Variable Display", sans-serif;
+  --font-body: "Aptos", "Segoe UI Variable Text", "Trebuchet MS", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: linear-gradient(180deg, #0a0d10 0%, #0f1419 100%);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+body { padding: 12px; }
+.app-shell { width: min(980px, 100%); margin: 0 auto; }
+.app-header, .panel, .result-card, .metadata-block, .info-pill {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+.app-kicker {
+  margin: 0 0 4px;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+h1, h2, h3 { margin: 0; font-family: var(--font-display); }
+.app-subtitle { margin: 6px 0 0; color: var(--muted); font-size: 0.9rem; }
+.app-badges { display: flex; gap: 6px; flex-wrap: wrap; }
+.app-badges span {
+  padding: 6px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.panel { padding: 16px; }
+.panel-header.compact { margin-bottom: 14px; }
+.panel-header.compact p { margin: 4px 0 0; color: var(--muted); }
+.tab-bar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  padding: 6px;
+  margin-bottom: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+}
+.tab-button {
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+.tab-button.is-active {
+  background: linear-gradient(135deg, #28493b, #335e4b);
+  color: var(--text);
+}
+.tab-panel {
+  display: none;
+}
+.tab-panel.is-active {
+  display: block;
+}
+.field { display: block; margin-bottom: 12px; }
+.field span { display: inline-block; margin-bottom: 6px; color: var(--muted); }
+.field input, button { font: inherit; }
+.field input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: #0d1216;
+  color: var(--text);
+}
+.path-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; }
+.actions { display: flex; gap: 8px; margin-bottom: 12px; }
+button { border: 0; cursor: pointer; }
+.primary {
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2f6651, #3d8065);
+  color: var(--text);
+  font-weight: 700;
+}
+.path-row button {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--text);
+}
+.hidden { display: none !important; }
+.info-strip.compact {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.info-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+}
+.info-pill span { color: var(--muted); font-size: 0.72rem; text-transform: uppercase; }
+.result-card, .metadata-block {
+  padding: 12px;
+  border-radius: var(--radius-md);
+  background: var(--surface-soft);
+}
+.result-card { color: var(--muted); line-height: 1.45; font-size: 0.9rem; margin-bottom: 12px; }
+.metadata-heading { margin-bottom: 8px; }
+.empty-panel p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+pre {
+  margin: 0;
+  max-height: 280px;
+  overflow: auto;
+  color: #b8e3ff;
+  font-family: "Cascadia Mono", "Consolas", monospace;
+  font-size: 0.82rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+@media (max-width: 800px) {
+  body { padding: 8px; }
+  .app-header, .path-row, .info-strip.compact, .tab-bar { display: grid; grid-template-columns: 1fr; }
+  .panel, .app-header { padding: 14px; }
+}
+
+.decompile-result-card { margin-bottom: 12px; }
+#decompile-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+#decompile-save {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface-strong);
+  color: var(--text);
+  font-weight: 700;
+}
