@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ANTC Studio by Air Conditioner</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="title-row">
+        <div class="title-stack">
+          <strong class="title-label">ANTC Studio - Air Conditioner / AC989</strong>
+        </div>
+        <div class="title-badges">
+          <span>ANTC</span>
+          <span>v0.2</span>
+        </div>
+      </header>
+
+      <nav class="tab-bar" aria-label="Sections">
+        <button class="tab-button is-active" data-tab-target="encode" type="button">Encode</button>
+        <button class="tab-button" data-tab-target="decode" type="button">Decode</button>
+        <button class="tab-button" data-tab-target="inspect" type="button">Inspect</button>
+        <button class="tab-button" data-tab-target="settings" type="button">Settings</button>
+      </nav>
+
+      <section class="tab-panel is-active" data-tab-panel="encode">
+        <section class="group">
+          <div class="group-title">File</div>
+          <label class="field field-inline">
+            <span class="field-label">Input</span>
+            <div class="row path-row">
+              <input id="encode-input-path" type="text" placeholder="Choose source file" />
+              <button id="encode-input-browse" type="button">Browse</button>
+            </div>
+          </label>
+          <label class="field field-inline">
+            <span class="field-label">Output</span>
+            <div class="row path-row">
+              <input id="encode-output-path" type="text" placeholder="Save as .atl" />
+              <button id="encode-output-browse" type="button">Save As</button>
+            </div>
+          </label>
+        </section>
+
+        <section class="group">
+          <div class="group-title">Encoding</div>
+          <div class="grid-two">
+            <label class="field">
+              <span>Input handling</span>
+              <select id="encode-input-mode">
+                <option value="auto">Auto detect (binary-only)</option>
+                <option value="raw">Raw binary to ATL</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Compression</span>
+              <select id="encode-compression">
+                <option value="auto">auto (file-aware)</option>
+                <option value="raw-binary">ATL/Color</option>
+                <option value="brotli-max">brotli max</option>
+                <option value="brotli">brotli</option>
+                <option value="gzip">gzip</option>
+                <option value="zlib">zlib</option>
+                <option value="none">none</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Width</span>
+              <input id="encode-width" type="number" min="0" placeholder="Auto" />
+            </label>
+            <label class="field">
+              <span>Height</span>
+              <input id="encode-height" type="number" min="0" placeholder="Auto" />
+            </label>
+          </div>
+          <label class="field field-inline">
+            <span class="field-label">Metadata JSON</span>
+            <div class="row path-row">
+              <input id="encode-metadata-path" type="text" placeholder="Optional metadata file" />
+              <button id="encode-metadata-browse" type="button">Browse</button>
+            </div>
+          </label>
+          <details id="advanced-encode-panel" class="advanced-encode">
+            <summary><span>Advanced Encode</span><span class="summary-toggle"></span></summary>
+            <div class="grid-two advanced-encode-grid">
+              <label class="field">
+                <span>Auto strategy</span>
+                <select id="advanced-auto-strategy">
+                  <option value="smart">smart</option>
+                  <option value="speed">speed</option>
+                  <option value="balanced">balanced</option>
+                  <option value="max">max</option>
+                  <option value="exhaustive">exhaustive</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Solo Encoding</span>
+                <select id="advanced-transform">
+                  <optgroup label="Working Solo">
+                    <option value="none">none</option>
+                    <option value="auto">auto solo encoding</option>
+                    <option value="bwt">BWT</option>
+                    <option value="mtf">MTF</option>
+                    <option value="bitplane">Bitplane</option>
+                    <option value="bitpack">Bitpack</option>
+                    <option value="byte-shuffle">Byte Shuffle</option>
+                    <option value="delta">Delta</option>
+                    <option value="xor-delta">XOR Delta</option>
+                    <option value="predictor-left">Predictor Left</option>
+                    <option value="predictor-paeth">Predictor Paeth</option>
+                    <option value="rle">RLE</option>
+                  </optgroup>
+                </select>
+              </label>
+              <label class="field field-span">
+                <span>Combo Encode</span>
+                <select id="combo-compression">
+                  <option value="combo-none">none</option>
+                  <option value="delta+rle">delta + rle (selected compression)</option>
+                  <option value="brotli+delta">brotli + delta</option>
+                  <option value="zlib+rle">zlib + rle</option>
+                  <option value="byte-shuffle+zlib">byte-shuffle + zlib</option>
+                  <option value="xor-delta+brotli">xor-delta + brotli</option>
+                  <option value="delta+bitpack+zlib">delta + bitpack + zlib</option>
+                  <option value="predictor-left+brotli">predictor-left + brotli</option>
+                </select>
+              </label>
+            </div>
+          </details>
+        </section>
+
+        <section class="group">
+          <div class="group-title">Status</div>
+          <div class="status-grid compact-status-grid">
+            <div class="status-item status-item-wide"><span>Current</span><strong id="encode-status-action">Idle</strong></div>
+            <div class="status-item"><span>Elapsed</span><strong id="encode-status-elapsed">0.0s</strong></div>
+            <div class="status-item"><span>Left</span><strong id="encode-status-remaining">-</strong></div>
+            <div class="status-item"><span>Ratio</span><strong id="encode-status-ratio">-</strong></div>
+            <div class="status-item"><span>%</span><strong id="encode-status-percent">0%</strong></div>
+          </div>
+          <div class="progress-shell">
+            <div id="encode-progress-primary" class="progress-fill"></div>
+          </div>
+          <div class="progress-shell secondary-progress">
+            <div id="encode-progress-secondary" class="progress-fill secondary"></div>
+          </div>
+        </section>
+
+        <div class="button-row">
+          <button id="encode-submit" class="primary" type="button">Encode</button>
+          <button id="encode-preflight" type="button">Estimate</button>
+          <button id="encode-reveal" type="button" disabled>Reveal Output</button>
+          <button id="encode-cancel" type="button">Cancel</button>
+          <button id="encode-advanced-toggle" type="button">Advanced...</button>
+          <button id="encode-help" type="button">Help</button>
+        </div>
+
+        <div id="encode-result" class="result-card hidden"></div>
+        <div id="encode-log" class="result-card log-card hidden"></div>
+      </section>
+
+      <section class="tab-panel" data-tab-panel="decode">
+        <section class="group">
+          <div class="group-title">File</div>
+          <label class="field field-inline">
+            <span class="field-label">Input</span>
+            <div class="row path-row">
+              <input id="decode-input-path" type="text" placeholder="Choose .atl file" />
+              <button id="decode-input-browse" type="button">Browse</button>
+            </div>
+          </label>
+          <label class="field field-inline">
+            <span class="field-label">Output</span>
+            <div class="row path-row">
+              <input id="decode-output-path" type="text" placeholder="Leave blank to restore original name" />
+              <button id="decode-output-browse" type="button">Save As</button>
+            </div>
+          </label>
+        </section>
+        <div class="button-row">
+          <button id="decode-submit" class="primary" type="button">Decode</button>
+          <button id="decode-reveal" type="button" disabled>Reveal Output</button>
+        </div>
+        <div id="decode-result" class="result-card hidden"></div>
+        <div id="decode-log" class="result-card log-card hidden"></div>
+      </section>
+
+      <section class="tab-panel" data-tab-panel="inspect">
+        <section class="group">
+          <div class="group-title">Inspect</div>
+          <label class="field field-inline">
+            <span class="field-label">Input</span>
+            <div class="row path-row">
+              <input id="inspect-input-path" type="text" placeholder="Choose .atl file" />
+              <button id="inspect-input-browse" type="button">Browse</button>
+            </div>
+          </label>
+          <div class="button-row compact-buttons">
+            <button id="inspect-submit" class="primary" type="button">Inspect</button>
+            <button id="inspect-export-image" type="button" disabled>Save Preview</button>
+          </div>
+          <div class="grid-three">
+            <label class="field">
+              <span>Format</span>
+              <select id="inspect-export-format">
+                <option value="webp">webp</option>
+                <option value="jpeg">jpeg</option>
+                <option value="png">png</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Export size</span>
+              <select id="inspect-export-size">
+                <option value="2048">2048 max</option>
+                <option value="1024">1024 max</option>
+                <option value="4096">4096 max</option>
+                <option value="visible">visible</option>
+                <option value="native">native</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Quality</span>
+              <select id="inspect-export-quality">
+                <option value="0.82">balanced</option>
+                <option value="0.92">high</option>
+                <option value="0.7">smaller</option>
+              </select>
+            </label>
+          </div>
+          <div id="preview-override-panel" class="override-panel hidden">
+            <label class="override-toggle" for="preview-override-toggle">
+              <input id="preview-override-toggle" type="checkbox" />
+              <span>Allow preview over the limit</span>
+            </label>
+            <p id="preview-override-text"></p>
+            <p class="override-note">Only applies to the current inspection.</p>
+          </div>
+          <div id="inspect-empty" class="empty-state">
+            <p>No file loaded yet.</p>
+            <span>Run an inspection to view checksum, metadata, and preview.</span>
+          </div>
+          <div id="inspect-results" class="inspect-results hidden">
+            <div class="info-strip compact">
+              <div class="info-pill"><span>Checksum</span><strong id="inspect-checksum">-</strong></div>
+              <div class="info-pill"><span>Pixels</span><strong id="inspect-pixels">-</strong></div>
+              <div class="info-pill"><span>Encoded bytes</span><strong id="inspect-encoded-size">-</strong></div>
+            </div>
+            <div id="inspect-export-info" class="info-strip compact hidden">
+              <div class="info-pill"><span>Format</span><strong id="inspect-export-format-value">-</strong></div>
+              <div class="info-pill"><span>Image Size</span><strong id="inspect-export-dimensions">-</strong></div>
+              <div class="info-pill"><span>Image Bytes</span><strong id="inspect-export-bytes">-</strong></div>
+            </div>
+            <div class="metadata-block">
+              <div class="metadata-heading">
+                <h3>Inspector</h3>
+                <p id="inspect-geometry"></p>
+              </div>
+              <div class="inspect-subtabs">
+                <button class="inspect-subtab is-active" data-inspect-view="color" type="button">Color</button>
+                <button class="inspect-subtab" data-inspect-view="hex" type="button">Hex</button>
+                <button class="inspect-subtab" data-inspect-view="ascii" type="button">ASCII</button>
+                <button class="inspect-subtab" data-inspect-view="integers" type="button">Integers</button>
+                <button class="inspect-subtab" data-inspect-view="float" type="button">Float</button>
+                <button class="inspect-subtab" data-inspect-view="strings" type="button">Strings</button>
+                <button class="inspect-subtab" data-inspect-view="stats" type="button">Stats</button>
+                <button class="inspect-subtab" data-inspect-view="metadata" type="button">Metadata</button>
+              </div>
+              <div id="inspect-view-color" class="inspect-view-panel is-active">
+                <div id="inspect-file-info" class="inspect-kv-grid"></div>
+                <div id="inspect-encoding-info" class="inspect-kv-grid inspect-kv-grid-compact"></div>
+                <div class="preview-frame compact">
+                  <canvas id="preview-canvas" width="1" height="1"></canvas>
+                </div>
+                <div id="preview-message" class="preview-message"></div>
+              </div>
+              <div id="inspect-sample-note" class="preview-message"></div>
+              <div id="inspect-view-hex" class="inspect-view-panel">
+                <pre id="inspect-hex-view" class="inspect-code-block"></pre>
+              </div>
+              <div id="inspect-view-ascii" class="inspect-view-panel">
+                <pre id="inspect-ascii-view" class="inspect-code-block"></pre>
+              </div>
+              <div id="inspect-view-integers" class="inspect-view-panel">
+                <pre id="inspect-integer-view" class="inspect-code-block"></pre>
+              </div>
+              <div id="inspect-view-float" class="inspect-view-panel">
+                <pre id="inspect-float-view" class="inspect-code-block"></pre>
+              </div>
+              <div id="inspect-view-strings" class="inspect-view-panel">
+                <pre id="inspect-strings-view" class="inspect-code-block"></pre>
+              </div>
+              <div id="inspect-view-stats" class="inspect-view-panel">
+                <pre id="inspect-stats-view" class="inspect-code-block"></pre>
+              </div>
+              <div id="inspect-view-metadata" class="inspect-view-panel">
+                <pre id="inspect-metadata" class="inspect-code-block"></pre>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="tab-panel" data-tab-panel="settings">
+        <section class="group">
+          <div class="group-title">Settings</div>
+          <div class="grid-two">
+            <label class="field">
+              <span>Default input</span>
+              <select id="settings-default-input-mode">
+                <option value="auto">Auto detect (binary-only)</option>
+                <option value="raw">Raw binary to ATL</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Default compression</span>
+              <select id="settings-default-compression">
+                <option value="raw-binary">Raw binary to ATL</option>
+                <option value="auto">auto</option>
+                <option value="brotli-max">brotli max</option>
+                <option value="brotli">brotli</option>
+                <option value="gzip">gzip</option>
+                <option value="zlib">zlib</option>
+                <option value="none">none</option>
+              </select>
+            </label>
+            <label class="field">
+              <span>Preview limit</span>
+              <input id="settings-preview-limit" type="number" min="1" step="1" />
+            </label>
+          </div>
+          <div class="toggle-list">
+            <label class="toggle-field" for="settings-allow-large-files">
+              <input id="settings-allow-large-files" type="checkbox" />
+              <span>Allow files over 2 GB safety limit</span>
+            </label>
+            <label class="toggle-field" for="settings-allow-all-encoders">
+              <input id="settings-allow-all-encoders" type="checkbox" />
+              <span>Allow all encoders regardless of extension</span>
+            </label>
+            <label class="toggle-field" for="settings-allow-unrestricted-estimate">
+              <input id="settings-allow-unrestricted-estimate" type="checkbox" />
+              <span>Allow estimate to ignore extension encoder limits</span>
+            </label>
+            <label class="toggle-field" for="settings-show-operation-logs">
+              <input id="settings-show-operation-logs" type="checkbox" />
+              <span>Show encode and decode logs</span>
+            </label>
+          </div>
+        </section>
+        <div class="button-row">
+          <button id="settings-apply" class="primary" type="button">Apply</button>
+          <button id="settings-reset" type="button">Reset</button>
+        </div>
+        <div id="settings-result" class="result-card hidden"></div>
+      </section>
+
+      <div id="status-bar" class="status-bar idle">Ready.</div>
+    </main>
+
+    <div id="freeze-overlay" class="freeze-overlay hidden" aria-hidden="true">
+      <div class="freeze-overlay-card">
+        <strong>Processing</strong>
+        <p id="freeze-overlay-detail">
+          Large file processing is running. Wait for the operation to finish.
+        </p>
+      </div>
+    </div>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>
